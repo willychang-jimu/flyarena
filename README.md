@@ -42,7 +42,8 @@ python -m venv .venv
 
 1. 在 GitHub 建立一個公開 repository，把這個資料夾推上去（`.gitignore` 已排除資料、大腦與虛擬環境）。
 2. repository 的 **Settings → Pages**：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾選 `/docs`。
-3. 之後每天 `run_daily.bat` 跑完，把 `docs/` 和 `leagues/*/profiles.json` 的變更 commit 並 push，網站就會更新。
+3. 之後每天執行 `run_daily.bat`，跑完會自動把 `docs/` 和角色檔 commit 並 push，網站就會更新
+   （沒有變更就不推送；失敗時看 `leagues/daily.log`）。放進 Windows 工作排程器時用 `run_daily.bat survivors-2026 quiet`，不會自動打開網頁。
 
 ## 可調整的機制（`arena.json`）
 
