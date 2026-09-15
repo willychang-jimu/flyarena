@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+data/
+runs/
+reports/
+# 聯賽資料（大腦、快照）不上傳，但保留手動編輯的角色檔
+leagues/**
+!leagues/*/
+!leagues/*/profiles.json
+# Claude 本機設定（含本機路徑）
+.claude/

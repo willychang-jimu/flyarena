@@ -1,0 +1,82 @@
+# 🪰 FlyArena：果蠅交易員研究平台
+
+受 stonkfly（果蠅連接圖交易實驗）啟發的**研究用模擬平台**：讓以果蠅蘑菇體為藍本的小大腦看台股行情、
+做買賣決策、接受多巴胺獎懲，然後做訊號反應測試、回測、淘汰賽與每日聯賽。
+
+> **只做模擬交易，不連任何券商帳戶，不是投資建議。** 目前沒有任何證據顯示果蠅交易員能穩定賺錢，
+> 這個平台的目的正是用對照組去檢驗這件事。
+
+## 安裝
+
+```bat
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python -m flyarena fetch
+```
+
+## 指令
+
+| 指令 | 做什麼 |
+|---|---|
+| `python -m flyarena fetch` | 更新台股日線（Yahoo，還原股價，自動清除不可能的跳動） |
+| `python -m flyarena probe --seed 0` | 訊號反應測試：制約學習、規則反轉、各訊號反應強度 → `reports/` |
+| `python -m flyarena tournament --seed 7` | 訓練期淘汰賽＋測試期最終驗證（含對照組）→ `runs/`、`reports/` |
+| `python -m flyarena league-create 名稱 --from runs/tournament-seed7/survivors --start 2026-01-02` | 用存活果蠅建立聯賽 |
+| `python -m flyarena league-create 名稱 --new 12 --start 2026-09-16` | 用新生果蠅建立聯賽 |
+| `python -m flyarena daily 名稱` | 收盤後重播聯賽、產生今日戰報 → `leagues/名稱/reports/latest.html` |
+| `run_daily.bat 名稱` | 同上並自動打開戰報（可放進 Windows 工作排程器） |
+| `python -m pytest -q` | 核心正確性測試 |
+
+所有指令都可加 `--config 其他設定檔.json`，方便同時比較不同賽制。
+
+## Dashboard（可公開在 GitHub Pages）
+
+`daily` 每天會順便更新 `docs/index.html`；只想重建時用 `python -m flyarena site 名稱 --offline`。
+網頁是單一 HTML 檔（資料內嵌），直接雙擊就能看，也能原封不動放上 GitHub Pages。
+
+- 每隻果蠅自動取暱稱（真實果蠅突變基因名）、推算個性、生成像素頭像。
+- 修改暱稱、個性、頭像：編輯 `leagues/名稱/profiles.json`，自訂圖片放 `avatars/`（見 `avatars/README.md`）。
+- 內容只有模擬成績、報酬率曲線與決策紀錄，不含原始股價；頁首固定顯示「模擬實驗、非投資建議」。
+
+### 發布到 GitHub Pages
+
+1. 在 GitHub 建立一個公開 repository，把這個資料夾推上去（`.gitignore` 已排除資料、大腦與虛擬環境）。
+2. repository 的 **Settings → Pages**：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾選 `/docs`。
+3. 之後每天 `run_daily.bat` 跑完，把 `docs/` 和 `leagues/*/profiles.json` 的變更 commit 並 push，網站就會更新。
+
+## 可調整的機制（`arena.json`）
+
+| 區塊 | 參數 | 說明 |
+|---|---|---|
+| `symbols` / `benchmark` | 股票代號 | 上市 `.TW`、上櫃 `.TWO`；大盤 `^TWII` 作為基準與市場感覺輸入 |
+| `broker` | `capital`、`order_value`、`max_position_value` | 本金、單筆金額、單檔部位上限 |
+| | `trade_every_days` | 交易頻率：每 N 個交易日決策一次 |
+| | `odd_lot`、`fee_rate`、`fee_discount`、`min_fee`、`tax_rate`、`etf_tax_rate` | 零股、手續費與折扣、證交稅 |
+| `brain` | `n_kc`、`kc_sparsity`、`learning_rate`、`trace_decay`、`weight_recovery`、`exploration`、`frozen` | 大腦結構與學習參數 |
+| `reward` | `mode` | `action_contingent`（預設）、`equity_binary`（stonkfly 式）、`equity_proportional`、`shuffled`（對照組）、`none` |
+| | `horizon_days`、`cost`、`scale`、`deadband` | 幾天後結算、成本門檻、刺激強度 |
+| `periods` | `train_start`、`train_end`、`test_start` | 訓練期與沒比過的測試期 |
+| `tournament` | `population`、`rounds`、`eliminate`、`score`、`mutation`、`seed` | 族群大小、回合、每回合淘汰數、評分（sharpe/return/hit_rate/calmar）、突變幅度 |
+
+## 設計重點
+
+- **不偷看未來**：第 t 天收盤後決策，第 t+1 天開盤成交；感覺輸入只用第 t 天以前的資料。
+- **大腦可替換**：實作 `flyarena/brains/base.py` 的 `Brain` 介面，並在 `brains/__init__.py` 註冊，
+  回測、淘汰賽、聯賽都不用改。之後可以加入 MaleCNS 真實蘑菇體接線版。
+- **對照組是研究的核心**：隨機、買進持有、動能規則，以及冠軍的「凍結」「失憶」「亂獎懲雙胞胎」。
+- **聯賽用確定性重播**：只存果蠅出生時的大腦與設定，每天從開賽日重播，結果可完全重現。
+- **淘汰賽的遺傳**：子代繼承接線與參數（基因），記憶不遺傳。
+
+## 已知限制
+
+- Yahoo 還原股價偶有錯誤；已自動修補超過漲跌幅的跳動，但重要結論請用其他資料源交叉確認。
+- 使用還原價計算股數；未模擬漲跌停鎖死、流動性、滑價。
+- 資料源若改寫歷史，聯賽重播的過去名次可能改變（戰報會顯示資料指紋）。
+- 輕量蘑菇體是抽象計算模型，不是果蠅生理的精確重現。
+
+## 第一次淘汰賽的結果（seed 7，16 隻、6 回合）
+
+測試期 2022-01 ~ 2026-09，大盤 +151%：買進持有 +298%、動能規則 +231%（Sharpe 1.61）、
+冠軍果蠅 +118%（Sharpe 0.89）、亂獎懲雙胞胎 +93%、凍結 +74%、失憶 +78%、隨機 +54%。
+冠軍的判斷命中率 48.7%、IC 為負：**沒有預測能力的證據**。它贏過凍結版本，主要是因為學會了少交易
+（成交 1,276 筆 vs 3,932 筆），省下交易成本，而不是看準方向。

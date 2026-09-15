@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__</title>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<div class="disclaimer" role="note">
+  ⚠️ 這是果蠅神經模型的<strong>模擬交易實驗</strong>：所有買賣都是虛擬的，股票只是實驗標的，<strong>不構成任何投資建議</strong>。
+</div>
+<main>
+  <header class="top">
+    <div>
+      <h1 class="brand"><img class="av" src="avatars/logo.svg" alt=""><span id="title">果蠅交易聯賽</span></h1>
+      <p class="sub" id="subtitle"></p>
+    </div>
+    <button id="theme" class="ghost" type="button" aria-label="切換深淺色">🌓</button>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="今日摘要"></section>
+
+  <nav class="filters" aria-label="篩選">
+    <div class="seg" role="group" aria-label="顯示哪些交易員">
+      <button type="button" data-filter="all" aria-pressed="true">全部</button>
+      <button type="button" data-filter="active" aria-pressed="false">存活</button>
+      <button type="button" data-filter="out" aria-pressed="false">已淘汰</button>
+      <button type="button" data-filter="control" aria-pressed="false">對照組</button>
+    </div>
+    <input id="search" type="search" placeholder="搜尋暱稱、編號、個性…" aria-label="搜尋">
+  </nav>
+
+  <section class="split">
+    <div class="card">
+      <div class="card-head">
+        <h2>資產曲線 <span class="muted small">開賽以來報酬率</span></h2>
+        <div id="legend" class="legend"></div>
+      </div>
+      <div id="chart" class="chart"></div>
+      <details>
+        <summary>表格檢視</summary>
+        <div id="chart-table" class="scroll"></div>
+      </details>
+    </div>
+    <aside class="card" id="detail" aria-live="polite"></aside>
+  </section>
+
+  <section class="card">
+    <h2>排行榜</h2>
+    <div class="scroll"><table id="board" class="board"></table></div>
+  </section>
+
+  <section>
+    <h2>果蠅角色卡</h2>
+    <div id="cards" class="cards"></div>
+  </section>
+
+  <section class="split even">
+    <div class="card">
+      <h2>家族樹</h2>
+      <div id="tree" class="tree"></div>
+    </div>
+    <div class="card">
+      <h2>淘汰紀錄</h2>
+      <ol id="timeline" class="timeline"></ol>
+    </div>
+  </section>
+
+  <section class="card about">
+    <h2>這是什麼？</h2>
+    <div id="about"></div>
+  </section>
+
+  <footer id="footer" class="muted small"></footer>
+</main>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<script id="data" type="application/json">__DATA__</script>
+<script>/*__JS__*/</script>
+</body>
+</html>
