@@ -164,8 +164,9 @@ def observations(alive, dead, controls, bench):
     return lines
 
 
-def build(name, refresh=False):
-    result = league.replay(name, refresh=refresh)
+def build(name, refresh=False, result=None, out=None):
+    """result：已經重播好的結果（避免重播兩次）；out：輸出資料夾，預設 notes/season-reports/。"""
+    result = result or league.replay(name, refresh=refresh)
     cfg, market, rules = result["cfg"], result["market"], result["rules"]
     capital, days = cfg["broker"]["capital"], result["days"]
     snap = league.snapshot(result)
@@ -218,7 +219,8 @@ def build(name, refresh=False):
                                prof, cfg, e, season_days), ""]
 
     md += observations(alive, [data[e["name"]] for e in order], controls, bench)
-    OUT.mkdir(parents=True, exist_ok=True)
-    path = OUT / f"{name}_{snap['date']}.md"
+    folder = Path(out) if out else OUT
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{name}.md"  # 每天覆蓋；過去的版本保留在 git 歷史裡
     path.write_text("\n".join(md) + "\n", encoding="utf-8")
     return path

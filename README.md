@@ -43,11 +43,25 @@ python -m venv .venv
 | `python -m flyarena daily 名稱` | 收盤後重播聯賽、產生今日戰報與 dashboard 本機預覽（`preview/`） |
 | `./run_daily.sh 名稱`（Mac）／`run_daily.bat 名稱`（Windows） | 同上並自動打開；不影響公開網站 |
 | `python -m flyarena season-report 名稱` | 季賽報告（Markdown）：各季排名、前三名總結、淘汰果蠅失敗報告 → `notes/season-reports/` |
+| `python -m flyarena season-create 名稱 --title 標題 --start 開賽日 --veterans-from 上一屆` | 建立新一屆：市值排名選股、老將帶記憶參賽、新秀補滿 |
+| `python -m flyarena publish` | 發布所有屆（雲端每天執行）：各屆 dashboard、季賽報告、總覽首頁；加 `--preview` 只輸出本機預覽 |
 | `python -m pytest -q` | 核心正確性測試 |
 
 研究筆記與常見問題（修改限制、個性遺傳、賽制調整、果蠅的能力）見 [notes/FAQ.md](notes/FAQ.md)。
 
 所有指令都可加 `--config 其他設定檔.json`，方便同時比較不同賽制。
+
+## 聯賽屆次
+
+所有屆次列在 `leagues/seasons.json`；每一屆裡，每 20 個交易日為「一季」，季末淘汰最後一名。
+
+| 屆 | 期間 | 選股 | 資金規則 | 參賽 |
+|---|---|---|---|---|
+| 第 1 屆 `survivors-2026` | 2026-01-02 ～ 2026-09-30 | 7 檔權值股與 ETF | 本金 100 萬、單筆 10 萬、單檔上限 30 萬 | 淘汰賽存活的 16 隻 |
+| 第 2 屆 `season2-top150` | 2026-10-01 起 | 上市市值前 150 大（排除 ETF、特別股、創新板，名單整屆固定） | 本金 100 萬、單筆 5 萬、單檔上限 10 萬、每天最多新買 3 檔 | 第 1 屆存活老將（帶記憶）＋新秀補滿 16 隻 |
+
+每天最多新買 3 檔時，果蠅會對 150 檔都做判斷，只執行「最想買」的前 3 檔；沒入選的判斷不下單，但仍結算獎懲。
+已達單檔上限或現金不足的股票不佔名額。
 
 ## Dashboard（可公開在 GitHub Pages）
 

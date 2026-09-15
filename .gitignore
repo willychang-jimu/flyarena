@@ -11,6 +11,7 @@ preview/
 # 聯賽：雲端重播需要的設定、名冊、大腦存檔與角色檔要上傳；每日快照與本機戰報不上傳
 leagues/**
 !leagues/*/
+!leagues/seasons.json
 !leagues/*/profiles.json
 !leagues/*/config.json
 !leagues/*/league.json

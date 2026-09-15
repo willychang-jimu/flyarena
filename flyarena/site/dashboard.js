@@ -67,7 +67,7 @@
 
   // ---- 標題與摘要 ----
   function renderHeader() {
-    document.getElementById("title").textContent = `果蠅交易聯賽｜${L.name}`;
+    document.getElementById("title").textContent = `果蠅交易聯賽｜${L.title || L.name}`;
     $("#subtitle").textContent =
       `${L.date} 收盤・第 ${L.season} 季・開賽第 ${L.trading_days} 個交易日・` +
       `每 ${L.season_days} 個交易日淘汰 ${L.eliminate} 隻（剩 ${L.min_survivors} 隻為止）・依 Sharpe 排名`;
@@ -228,7 +228,8 @@
     const s = t.stats;
     const stat = (k, v) => [el("span", { text: k }), el("b", { class: "num" }, v)];
     const today = t.today;
-    const decisions = today.decisions.filter((d) => d.action !== "HOLD");
+    const decisions = today.decisions.filter((d) => d.action !== "HOLD" && d.selected !== false);
+    const skipped = today.decisions.filter((d) => d.action === "BUY" && d.selected === false).length;
     $("#detail").replaceChildren(
       el("div", { class: "hero" }, avatar(t, "xl"),
         el("div", {}, el("h3", { text: label(t) }), el("div", { class: "muted small", text: t.control ? "對照組" : `${t.id}・第 ${t.generation} 代` }),
@@ -243,6 +244,7 @@
       t.traits ? el("div", { class: "section" }, el("h4", { text: "個性特質（和族群比較）" }), traitBlock(t)) : null,
       el("div", { class: "section" }, el("h4", { text: `今天（${L.date}）` }),
         el("div", {}, decisions.length ? decisions.map((d) => el("span", { class: `chip ${d.action}`, text: `${d.name} ${d.action === "BUY" ? "買" : "賣"}` })) : el("span", { class: "muted small", text: "收盤後沒有買賣決策" })),
+        skipped ? el("div", { class: "small muted", text: `另有 ${skipped} 檔想買但沒入選（每日買進上限）` }) : null,
         el("div", { class: "small ink2", text: today.fills.length ? "開盤成交：" + today.fills.map((f) => `${f.side === "BUY" ? "買" : "賣"} ${f.name} ${f.shares.toLocaleString()} 股`).join("、") : "今天開盤沒有成交" }),
         el("div", { class: "small ink2", text: `多巴胺：獎勵 ${today.reward} 次、懲罰 ${today.punish} 次` }),
         el("div", { class: "small muted", text: "庫存：" + (t.positions.length ? t.positions.map((p) => `${p.name} ${p.shares.toLocaleString()} 股`).join("、") : "空手") })),

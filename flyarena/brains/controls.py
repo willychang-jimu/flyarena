@@ -27,7 +27,8 @@ class BuyHoldBrain(Brain):
     kind = "buyhold"
 
     def decide(self, obs, rng):
-        return BUY, {}
+        # conviction 相同 → 有每日買進上限時，依選股清單順序（市值大到小）買，像存股族
+        return BUY, {"conviction": 0.0}
 
     def state(self):
         return {"kind": self.kind}
@@ -45,10 +46,10 @@ class MomentumBrain(Brain):
         z = dict(zip(obs.names, obs.z))
         score = (z["ret_20"] + z["ma_20"]) / 2
         if score > self.threshold:
-            return BUY, {"score": round(float(score), 3)}
+            return BUY, {"score": round(float(score), 3), "conviction": float(score)}
         if score < -self.threshold:
-            return SELL, {"score": round(float(score), 3)}
-        return HOLD, {"score": round(float(score), 3)}
+            return SELL, {"score": round(float(score), 3), "conviction": float(score)}
+        return HOLD, {"score": round(float(score), 3), "conviction": float(score)}
 
     def state(self):
         return {"kind": self.kind, "threshold": self.threshold}

@@ -19,7 +19,7 @@ concurrency:
 jobs:
   daily:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -35,18 +35,18 @@ jobs:
       - name: 測試
         run: python -X utf8 -m pytest -q
 
-      - name: 更新資料、重播聯賽、產生 dashboard
-        run: python -X utf8 -m flyarena daily survivors-2026 --publish
+      - name: 更新資料、重播所有賽季、產生 dashboard 與季賽報告
+        run: python -X utf8 -m flyarena publish
 
       - name: 有變更才推送
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs leagues/survivors-2026/profiles.json
+          git add -A docs leagues notes/season-reports
           if git diff --cached --quiet; then
             echo "沒有新的變更，不推送"
           else
-            git commit -m "daily update survivors-2026"
+            git commit -m "daily update"
             git pull --rebase
             git push
           fi

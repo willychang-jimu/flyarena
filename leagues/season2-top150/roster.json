@@ -1,0 +1,434 @@
+[
+  {
+    "name": "fly-100",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261000
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-101",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261001
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-102",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261002
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-103",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261003
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-104",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261004
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-105",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261005
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-106",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261006
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-107",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261007
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-108",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261008
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-109",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261009
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-110",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261010
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-111",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261011
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-112",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261012
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-113",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261013
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-114",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261014
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  },
+  {
+    "name": "fly-115",
+    "state": {
+      "kind": "mushroom",
+      "n_pn": 85,
+      "n_kc": 2000,
+      "pn_per_kc": 7,
+      "params": {
+        "kc_sparsity": 0.05,
+        "learning_rate": 0.05,
+        "trace_decay": 0.6,
+        "weight_recovery": 0.002,
+        "exploration": 0.05
+      },
+      "frozen": false,
+      "seed": 20261015
+    },
+    "arrays": [
+      "W",
+      "wiring"
+    ],
+    "meta": {
+      "generation": 0,
+      "parent": null,
+      "rookie": true
+    }
+  }
+]

@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 from . import senses
-from .brains import HOLD, Observation
+from .brains import BUY, HOLD, SELL, Observation
 from .market import Broker
 from .rewards import RewardSystem
 
@@ -75,9 +75,32 @@ class Trader:
         self.brain.new_episode()
 
 
+def select_orders(trader, orders, max_buys):
+    """每日買進上限：只執行「最想買」（conviction 最高）的前 max_buys 檔 BUY；
+    SELL 只有持股時才算入選。沒入選的判斷不下單，但仍會結算獎懲，果蠅照樣從中學習。
+    已達單檔部位上限或現金不足的股票買不下去，不佔名額，改由下一檔遞補。"""
+    broker = trader.broker
+
+    def can_buy(symbol):
+        held = broker.positions.get(symbol, 0) * trader.marks.get(symbol, 0.0)
+        return broker.cash >= 1000 and held < broker.c["max_position_value"] * 0.98
+
+    buys = [o for o in orders if o[1] == BUY]
+    for o in buys:
+        o[3]["selected"] = False
+    eligible = [o for o in buys if can_buy(o[0])]
+    score = {id(o): o[3]["conviction"] if "conviction" in o[3] else trader.rng.random() for o in eligible}
+    for o in sorted(eligible, key=lambda o: -score[id(o)])[:max_buys]:
+        o[3]["selected"] = True
+    for o in orders:
+        if o[1] == SELL:
+            o[3]["selected"] = trader.broker.positions.get(o[0], 0) > 0
+
+
 def run(traders, market, cfg, start=None, end=None, learn=True):
     days = market.days(start, end)
     every = max(1, int(cfg["broker"]["trade_every_days"]))
+    max_buys = cfg["broker"].get("max_buys_per_day")
     for d in days:
         k = market.day_index[d]
         opens = {s: market.open[s][d] for s in market.symbols if d in market.open[s]}
@@ -88,7 +111,10 @@ def run(traders, market, cfg, start=None, end=None, learn=True):
                 if s not in opens:
                     waiting.append((s, action, tag, entry))  # 該檔今天沒開盤，順延
                     continue
-                fill, note = t.broker.execute(d.date(), s, action, opens[s])
+                if entry.get("selected", True):
+                    fill, note = t.broker.execute(d.date(), s, action, opens[s])
+                else:
+                    fill, note = None, "未入選（超過每日買進上限或沒有庫存）"
                 t.rewards.on_decision(k, s, action, opens[s], tag)
                 entry.update(filled=fill is not None, note=note, price=round(opens[s], 4))
             t.orders = waiting
@@ -105,6 +131,7 @@ def run(traders, market, cfg, start=None, end=None, learn=True):
 
             if k % every:
                 continue
+            new_orders = []
             for s in market.symbols:
                 row = market.rows[s].get(d)
                 if row is None:
@@ -115,5 +142,8 @@ def run(traders, market, cfg, start=None, end=None, learn=True):
                 entry = {"date": d, "symbol": s, "action": action, **info}
                 t.journal.append(entry)
                 if action != HOLD:
-                    t.orders.append((s, action, tag, entry))
+                    new_orders.append((s, action, tag, entry))
+            if max_buys is not None:
+                select_orders(t, new_orders, int(max_buys))
+            t.orders.extend(new_orders)
     return traders

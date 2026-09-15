@@ -35,6 +35,8 @@ body {
 main { max-width: 1200px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
 h1 { font-size: 24px; margin: 0; }
 .brand { display: flex; align-items: center; gap: 10px; }
+.back { display: inline-block; margin-bottom: 4px; color: var(--ink-2); text-decoration: none; }
+.back:hover { text-decoration: underline; }
 h2 { font-size: 16px; margin: 0 0 12px; }
 section { margin-top: 20px; }
 .small { font-size: 12px; font-weight: 400; }

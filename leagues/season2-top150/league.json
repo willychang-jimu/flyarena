@@ -1,0 +1,12 @@
+{
+  "name": "season2-top150",
+  "start": "2026-10-01",
+  "season_days": 20,
+  "eliminate": 1,
+  "min_survivors": 4,
+  "controls": true,
+  "created": "2026-09-15T12:29:10",
+  "title": "第 2 屆｜市值前 150 大",
+  "field_size": 16,
+  "veterans_from": "survivors-2026"
+}

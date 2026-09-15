@@ -77,6 +77,8 @@ class MushroomBrain(Brain):
         info = {
             "mbon": [round(float(x), 4) for x in mbon],
             "kc_active": int(len(active)),
+            # 有多想買：BUY 輸出領先其他輸出多少（每日買進上限時用來挑前幾檔）
+            "conviction": float(mbon[0] - max(mbon[1], mbon[2])),
             "tag": (i, active),
         }
         return ACTIONS[i], info

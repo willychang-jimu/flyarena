@@ -25,14 +25,15 @@ URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}"
 TW = dt.timezone(dt.timedelta(hours=8))
 
 
-def _get(symbol, attempts=4):
-    """雲端伺服器偶爾會被 Yahoo 限流（HTTP 429），失敗時等待後重試。"""
+def _get(symbol, start=None, attempts=4):
+    """雲端伺服器偶爾會被 Yahoo 限流（HTTP 429），失敗時等待後重試。start=None 抓完整歷史。"""
+    period1 = int(pd.Timestamp(start, tz="UTC").timestamp()) if start else 0
     for attempt in range(attempts):
         try:
             r = requests.get(
                 URL.format(symbol),
                 params={
-                    "period1": 0,
+                    "period1": period1,
                     "period2": int(time.time()) + 86400,
                     "interval": "1d",
                     "events": "div,split",
@@ -52,8 +53,8 @@ def _get(symbol, attempts=4):
             time.sleep(wait)
 
 
-def fetch(symbol):
-    chart = _get(symbol)["chart"]
+def fetch(symbol, start=None):
+    chart = _get(symbol, start)["chart"]
     if not chart["result"]:
         raise RuntimeError(f"{symbol}: {chart['error']}")
     res = chart["result"][0]
@@ -99,19 +100,36 @@ def _path(symbol):
     return DATA / (symbol.replace("^", "_") + ".csv")
 
 
-def load(symbol, refresh=False):
+_FETCHED = {}  # 這次執行已經下載過的範圍，避免多個賽季重複下載同一檔
+
+
+def _covers(have, want):
+    """have / want 是 'full'（完整歷史）或起始日字串：已有的資料是否涵蓋需要的範圍。"""
+    return have == "full" or (want != "full" and have <= want)
+
+
+def load(symbol, refresh=False, start=None):
     path = _path(symbol)
-    if refresh or not path.exists():
+    meta = path.with_suffix(".start")
+    want = start or "full"
+    have = meta.read_text(encoding="utf-8").strip() if meta.exists() else ("full" if path.exists() else None)
+    fresh = symbol in _FETCHED and _covers(_FETCHED[symbol], want)
+    if have is None or not _covers(have, want) or (refresh and not fresh):
+        # 快取原本涵蓋的範圍不縮小，淘汰賽需要的完整歷史才不會被覆蓋
+        target = "full" if "full" in (have, want) else min(x for x in (have, want) if x)
         DATA.mkdir(exist_ok=True)
-        df = fetch(symbol)
+        df = fetch(symbol, None if target == "full" else target)
         # 收盤後資料才完整：台灣時間 14:30 前不收錄當天這根 K 線
         now = dt.datetime.now(TW)
         if now.hour * 60 + now.minute < 14 * 60 + 30:
             df = df[df.index.date < now.date()]
         df.to_csv(path)
+        meta.write_text(target, encoding="utf-8")
+        _FETCHED[symbol] = target
+        time.sleep(0.2)  # 對 Yahoo 客氣一點，減少被限流
     return pd.read_csv(path, index_col="date", parse_dates=["date"])
 
 
 def load_all(config, refresh=False):
     symbols = list(config["symbols"]) + [config["benchmark"]]
-    return {s: load(s, refresh) for s in symbols}
+    return {s: load(s, refresh, config.get("data_start")) for s in symbols}

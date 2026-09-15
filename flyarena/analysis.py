@@ -47,8 +47,9 @@ def book(trader, market, days, capital):
     return pd.DataFrame(rows, columns=["date", "cash", "held", "equity"]).set_index("date")
 
 
-def attribution(trader, market, last_day):
+def attribution(trader, market, last_day, names=None):
     """每檔股票的損益（已實現＋未實現，扣除手續費與稅）與賣出勝率（平均成本法）。"""
+    names = names or SYMBOL_NAMES
     out = {}
     for f in trader.broker.fills:
         a = out.setdefault(f.symbol, {"buy": 0.0, "sell": 0.0, "costs": 0.0, "shares": 0,
@@ -71,7 +72,7 @@ def attribution(trader, market, last_day):
         price = close.get(last_day) or close[max(d for d in close if d <= last_day)]
         a["open_value"] = a["shares"] * price
         a["pnl"] = a["sell"] + a["open_value"] - a["buy"] - a["costs"]
-        a["name"] = SYMBOL_NAMES.get(s, s)
+        a["name"] = names.get(s, s)
     return dict(sorted(out.items(), key=lambda kv: -kv[1]["pnl"]))
 
 
@@ -172,7 +173,7 @@ def profile(trader, result, cfg, initial_brains):
         "exposure": float((b.held / b.equity).mean()),
         "exposure_up_days": float((b.held / b.equity)[bench.pct_change() > 0].mean()),
         "risk": beta_alpha(b.equity, market.bench),
-        "attribution": attribution(trader, market, last_day),
+        "attribution": attribution(trader, market, last_day, {**SYMBOL_NAMES, **cfg.get("symbol_names", {})}),
         "quality": decision_quality(trader, market),
         "rewards": dict(trader.reward_count),
         "prefs_now": now, "prefs_floor": floor,

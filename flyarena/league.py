@@ -22,7 +22,12 @@ ROOT = Path(__file__).resolve().parent.parent
 LEAGUES = ROOT / "leagues"
 
 
-def create(name, cfg, entries, start, season_days=20, eliminate=1, min_survivors=4, controls=True):
+class NotStarted(Exception):
+    """開賽日之後還沒有交易日資料。"""
+
+
+def create(name, cfg, entries, start, season_days=20, eliminate=1, min_survivors=4, controls=True, **extra):
+    """extra 可放 title、end、veterans_from（上一屆聯賽名稱）、field_size（參賽總數）。"""
     folder = LEAGUES / name
     if folder.exists():
         raise FileExistsError(f"聯賽 {name} 已存在")
@@ -36,27 +41,54 @@ def create(name, cfg, entries, start, season_days=20, eliminate=1, min_survivors
         "min_survivors": min_survivors,
         "controls": controls,
         "created": dt.datetime.now().isoformat(timespec="seconds"),
+        **extra,
     }
     (folder / "league.json").write_text(json.dumps(rules, ensure_ascii=False, indent=2), encoding="utf-8")
     return folder
+
+
+def load_rules(name):
+    folder = LEAGUES / name
+    cfg = json.loads((folder / "config.json").read_text(encoding="utf-8"))
+    rules = json.loads((folder / "league.json").read_text(encoding="utf-8"))
+    return cfg, rules
 
 
 def _seed(name):
     return int.from_bytes(hashlib.sha256(name.encode()).digest()[:4], "little")
 
 
+def _veterans(name, rules, cfg, refresh):
+    """上一屆結束時的存活果蠅：帶著記憶進入新一屆（重播上一屆取得，不需手動匯出）。"""
+    prev = replay(rules["veterans_from"], refresh)
+    out = []
+    for t in prev["traders"]:
+        if t.meta.get("control") or t.name not in prev["active"]:
+            continue
+        brain = t.brain.clone()
+        brain.new_episode()
+        meta = dict(t.meta, veteran=True, from_league=rules["veterans_from"])
+        out.append(backtest.Trader(t.name, brain, cfg, _seed(f"{name}/{t.name}"), meta))
+    return out
+
+
 def replay(name, refresh=True):
     folder = LEAGUES / name
-    cfg = json.loads((folder / "config.json").read_text(encoding="utf-8"))
-    rules = json.loads((folder / "league.json").read_text(encoding="utf-8"))
+    cfg, rules = load_rules(name)
+    if dt.date.today().isoformat() < rules["start"]:  # 還沒到開賽日：不必下載資料
+        raise NotStarted(f"{rules.get('title', name)} 尚未開賽（開賽日 {rules['start']}）")
     frames = data.load_all(cfg, refresh)
     market = backtest.Market(frames, cfg)
-    traders = [backtest.Trader(n, b, cfg, _seed(n), m) for n, b, m in store.load_brains(folder)]
+    days = market.days(rules["start"], rules.get("end"))
+    if not days:
+        raise NotStarted(f"{rules.get('title', name)} 尚未開賽（開賽日 {rules['start']}）")
+    traders = _veterans(name, rules, cfg, refresh) if rules.get("veterans_from") else []
+    for n, b, m in store.load_brains(folder):  # 新秀：補到 field_size 為止（沒設定就全部參賽）
+        if rules.get("field_size") and len(traders) >= rules["field_size"]:
+            break
+        traders.append(backtest.Trader(n, b, cfg, _seed(n), m))
     if rules["controls"]:
         traders += tournament.controls(market, cfg, _seed(name))
-    days = market.days(rules["start"])
-    if not days:
-        raise RuntimeError("開賽日之後還沒有交易日資料")
     size = rules["season_days"]
     seasons = [days[i : i + size] for i in range(0, len(days), size)]
     active, eliminated = list(traders), []
@@ -95,7 +127,8 @@ def snapshot(result):
             active=t.name in result["active"],
             today_change=(curve[today] / prev - 1) if today in curve else None,
             decisions=[
-                {"symbol": e["symbol"], "action": ACTION_NAMES[e["action"]], "mbon": e.get("mbon")}
+                {"symbol": e["symbol"], "action": ACTION_NAMES[e["action"]], "mbon": e.get("mbon"),
+                 "selected": e.get("selected", True)}
                 for e in t.journal if e["date"] == today
             ],
             fills=[f.__dict__ for f in t.broker.fills if f.date == str(today.date())],
