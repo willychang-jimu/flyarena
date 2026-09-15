@@ -42,7 +42,10 @@ python -m venv .venv
 | `python -m flyarena league-create 名稱 --new 12 --start 2026-09-16` | 用新生果蠅建立聯賽 |
 | `python -m flyarena daily 名稱` | 收盤後重播聯賽、產生今日戰報與 dashboard 本機預覽（`preview/`） |
 | `./run_daily.sh 名稱`（Mac）／`run_daily.bat 名稱`（Windows） | 同上並自動打開；不影響公開網站 |
+| `python -m flyarena season-report 名稱` | 季賽報告（Markdown）：各季排名、前三名總結、淘汰果蠅失敗報告 → `notes/season-reports/` |
 | `python -m pytest -q` | 核心正確性測試 |
+
+研究筆記與常見問題（修改限制、個性遺傳、賽制調整、果蠅的能力）見 [notes/FAQ.md](notes/FAQ.md)。
 
 所有指令都可加 `--config 其他設定檔.json`，方便同時比較不同賽制。
 

@@ -92,6 +92,12 @@ def _site(a, result, snap):
     print("公開網站：" if a.publish else "本機預覽（不影響公開網站）：", path)
 
 
+def cmd_season_report(a, cfg):
+    from . import season_report
+
+    print("季賽報告：", season_report.build(a.name, refresh=not a.offline))
+
+
 def cmd_site(a, cfg):
     result = league.replay(a.name, refresh=not a.offline)
     snap = league.snapshot(result)
@@ -130,10 +136,14 @@ def main(argv=None):
         s.add_argument("--publish", action="store_true",
                        help="寫入公開網站 docs/ 並更新 profiles.json（給 GitHub Actions 用；預設只輸出本機預覽 preview/）")
         s.add_argument("--out", help="自訂 dashboard 輸出資料夾")
+    s = sub.add_parser("season-report", help="產生季賽報告（Markdown）：前三名總結、淘汰果蠅失敗報告")
+    s.add_argument("name")
+    s.add_argument("--offline", action="store_true", help="不更新資料，用本機快取")
     a = p.parse_args(argv)
     cfg = load_config(a.config)
     {"fetch": cmd_fetch, "probe": cmd_probe, "tournament": cmd_tournament,
-     "league-create": cmd_league_create, "daily": cmd_daily, "site": cmd_site}[a.cmd](a, cfg)
+     "league-create": cmd_league_create, "daily": cmd_daily, "site": cmd_site,
+     "season-report": cmd_season_report}[a.cmd](a, cfg)
 
 
 if __name__ == "__main__":
