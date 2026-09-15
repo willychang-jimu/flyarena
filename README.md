@@ -24,7 +24,7 @@ python -m venv .venv
 | `python -m flyarena league-create 名稱 --from runs/tournament-seed7/survivors --start 2026-01-02` | 用存活果蠅建立聯賽 |
 | `python -m flyarena league-create 名稱 --new 12 --start 2026-09-16` | 用新生果蠅建立聯賽 |
 | `python -m flyarena daily 名稱` | 收盤後重播聯賽、產生今日戰報 → `leagues/名稱/reports/latest.html` |
-| `run_daily.bat 名稱` | 同上並自動打開戰報（可放進 Windows 工作排程器） |
+| `run_daily.bat 名稱` | 只在本機產生今日戰報並打開（公開網站由 GitHub Actions 更新） |
 | `python -m pytest -q` | 核心正確性測試 |
 
 所有指令都可加 `--config 其他設定檔.json`，方便同時比較不同賽制。
@@ -42,8 +42,10 @@ python -m venv .venv
 
 1. 在 GitHub 建立一個公開 repository，把這個資料夾推上去（`.gitignore` 已排除資料、大腦與虛擬環境）。
 2. repository 的 **Settings → Pages**：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾選 `/docs`。
-3. 之後每天執行 `run_daily.bat`，跑完會自動把 `docs/` 和角色檔 commit 並 push，網站就會更新
-   （沒有變更就不推送；失敗時看 `leagues/daily.log`）。放進 Windows 工作排程器時用 `run_daily.bat survivors-2026 quiet`，不會自動打開網頁。
+3. 每日更新由 **GitHub Actions** 在雲端自動執行（`.github/workflows/daily.yml`），不需要開電腦：
+   週一到週五台灣時間 15:30 抓資料、重播聯賽、產生 dashboard，有變更才推送。
+   也可以到 repository 的 **Actions → 每日果蠅聯賽 → Run workflow** 手動執行；失敗時 GitHub 會寄信通知。
+4. 改暱稱、個性：直接在 GitHub 網頁編輯 `leagues/survivors-2026/profiles.json`，下次執行就會套用。
 
 ## 可調整的機制（`arena.json`）
 

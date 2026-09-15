@@ -1,0 +1,52 @@
+name: 每日果蠅聯賽
+
+on:
+  schedule:
+    # 台灣時間 15:30（UTC 07:30），週一到週五。GitHub 排程尖峰時可能延後數十分鐘。
+    - cron: "30 7 * * 1-5"
+  workflow_dispatch: # 可在 Actions 頁面手動按 Run workflow
+  push:
+    branches: [main]
+    paths: [".github/workflows/daily.yml"] # 修改這個檔案時也跑一次，方便確認
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-league
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: 安裝套件
+        run: pip install -r requirements.txt
+
+      - name: 測試
+        run: python -X utf8 -m pytest -q
+
+      - name: 更新資料、重播聯賽、產生 dashboard
+        run: python -X utf8 -m flyarena daily survivors-2026
+
+      - name: 有變更才推送
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs leagues/survivors-2026/profiles.json
+          if git diff --cached --quiet; then
+            echo "沒有新的變更，不推送"
+          else
+            git commit -m "daily update survivors-2026"
+            git pull --rebase
+            git push
+          fi

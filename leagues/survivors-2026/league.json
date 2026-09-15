@@ -1,0 +1,9 @@
+{
+  "name": "survivors-2026",
+  "start": "2026-01-02",
+  "season_days": 20,
+  "eliminate": 1,
+  "min_survivors": 4,
+  "controls": true,
+  "created": "2026-09-15T10:07:30"
+}

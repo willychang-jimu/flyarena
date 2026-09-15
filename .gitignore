@@ -4,9 +4,14 @@ __pycache__/
 data/
 runs/
 reports/
-# 聯賽資料（大腦、快照）不上傳，但保留手動編輯的角色檔
+# Claude 本機設定（含本機路徑）
+.claude/
+# 聯賽：雲端重播需要的設定、名冊、大腦存檔與角色檔要上傳；每日快照與本機戰報不上傳
 leagues/**
 !leagues/*/
 !leagues/*/profiles.json
-# Claude 本機設定（含本機路徑）
-.claude/
+!leagues/*/config.json
+!leagues/*/league.json
+!leagues/*/roster.json
+!leagues/*/brains/
+!leagues/*/brains/*.npz

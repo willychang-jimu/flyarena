@@ -25,20 +25,35 @@ URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}"
 TW = dt.timezone(dt.timedelta(hours=8))
 
 
+def _get(symbol, attempts=4):
+    """雲端伺服器偶爾會被 Yahoo 限流（HTTP 429），失敗時等待後重試。"""
+    for attempt in range(attempts):
+        try:
+            r = requests.get(
+                URL.format(symbol),
+                params={
+                    "period1": 0,
+                    "period2": int(time.time()) + 86400,
+                    "interval": "1d",
+                    "events": "div,split",
+                },
+                headers={"User-Agent": "Mozilla/5.0"},
+                timeout=30,
+            )
+            if r.status_code in (429, 500, 502, 503, 504):
+                raise requests.HTTPError(f"HTTP {r.status_code}")
+            r.raise_for_status()
+            return r.json()
+        except (requests.RequestException, ValueError) as e:
+            if attempt == attempts - 1:
+                raise
+            wait = 5 * 3**attempt
+            print(f"{symbol} 下載失敗（{e}），{wait} 秒後重試")
+            time.sleep(wait)
+
+
 def fetch(symbol):
-    r = requests.get(
-        URL.format(symbol),
-        params={
-            "period1": 0,
-            "period2": int(time.time()) + 86400,
-            "interval": "1d",
-            "events": "div,split",
-        },
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=30,
-    )
-    r.raise_for_status()
-    chart = r.json()["chart"]
+    chart = _get(symbol)["chart"]
     if not chart["result"]:
         raise RuntimeError(f"{symbol}: {chart['error']}")
     res = chart["result"][0]

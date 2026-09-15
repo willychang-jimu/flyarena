@@ -1,0 +1,55 @@
+{
+  "symbols": [
+    "2330.TW",
+    "2317.TW",
+    "2454.TW",
+    "2308.TW",
+    "0050.TW",
+    "006208.TW",
+    "00878.TW"
+  ],
+  "benchmark": "^TWII",
+  "broker": {
+    "capital": 1000000,
+    "order_value": 100000,
+    "max_position_value": 300000,
+    "trade_every_days": 1,
+    "odd_lot": true,
+    "fee_rate": 0.001425,
+    "fee_discount": 0.6,
+    "min_fee": 20,
+    "min_fee_odd_lot": 1,
+    "tax_rate": 0.003,
+    "etf_tax_rate": 0.001
+  },
+  "brain": {
+    "kind": "mushroom",
+    "n_kc": 2000,
+    "pn_per_kc": 7,
+    "kc_sparsity": 0.05,
+    "learning_rate": 0.05,
+    "trace_decay": 0.6,
+    "weight_recovery": 0.002,
+    "exploration": 0.05,
+    "frozen": false
+  },
+  "reward": {
+    "mode": "action_contingent",
+    "horizon_days": 5,
+    "deadband": 0.002
+  },
+  "periods": {
+    "warmup_start": "2012-01-01",
+    "train_start": "2014-01-01",
+    "train_end": "2021-12-31",
+    "test_start": "2022-01-01"
+  },
+  "tournament": {
+    "population": 16,
+    "rounds": 6,
+    "eliminate": 4,
+    "score": "sharpe",
+    "mutation": 0.2,
+    "seed": 7
+  }
+}
