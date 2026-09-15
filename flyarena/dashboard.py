@@ -31,13 +31,13 @@ def _num(x, digits=5):
     return round(x, digits) if x == x and abs(x) != float("inf") else None
 
 
-def payload(result, snap, out_dir):
+def payload(result, snap, out_dir, save_profiles=False):
     cfg, market = result["cfg"], result["market"]
     capital = cfg["broker"]["capital"]
     dates = [str(d.date()) for d in result["days"]]
     bench = market.bench.reindex(result["days"]).ffill()
     rows = {r["name"]: r for r in snap["rows"]}
-    profs = profiles.build(league.LEAGUES / snap["league"], snap["rows"])
+    profs = profiles.build(league.LEAGUES / snap["league"], snap["rows"], save=save_profiles)
     eliminated = {e["name"]: e for e in result["eliminated"]}
     children = {}
     for name, p in profs.items():
@@ -96,10 +96,11 @@ def payload(result, snap, out_dir):
     }
 
 
-def build(result, snap, out_dir=None):
-    out_dir = Path(out_dir) if out_dir else ROOT / "docs"
+def build(result, snap, out_dir=None, save_profiles=False):
+    """公開網站（docs/）由雲端用 save_profiles=True 產生；本機預覽輸出到 preview/ 且不改寫角色檔。"""
+    out_dir = Path(out_dir) if out_dir else ROOT / "preview"
     out_dir.mkdir(parents=True, exist_ok=True)
-    data = payload(result, snap, out_dir)
+    data = payload(result, snap, out_dir, save_profiles)
     # 網站 logo：Windows 10 沒有 🪰 字型，改用像素果蠅
     (out_dir / "avatars" / "logo.svg").write_text(avatars.fly_svg("flyarena", {"title": "均衡"}), encoding="utf-8")
     html = (TEMPLATE / "dashboard.html").read_text(encoding="utf-8")

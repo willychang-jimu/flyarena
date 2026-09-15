@@ -8,11 +8,28 @@
 
 ## 安裝
 
+需要 Python 3.11 以上。
+
+**Mac**（內建 Python 太舊時，到 python.org 下載或 `brew install python@3.12`）：
+
+```sh
+git clone https://github.com/willychang-jimu/flyarena.git
+cd flyarena
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m flyarena fetch
+```
+
+**Windows**：
+
 ```bat
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python -m flyarena fetch
 ```
+
+以下指令的 `python` 指的是虛擬環境裡的 Python（Mac 先 `source .venv/bin/activate`）。
 
 ## 指令
 
@@ -23,15 +40,17 @@ python -m venv .venv
 | `python -m flyarena tournament --seed 7` | 訓練期淘汰賽＋測試期最終驗證（含對照組）→ `runs/`、`reports/` |
 | `python -m flyarena league-create 名稱 --from runs/tournament-seed7/survivors --start 2026-01-02` | 用存活果蠅建立聯賽 |
 | `python -m flyarena league-create 名稱 --new 12 --start 2026-09-16` | 用新生果蠅建立聯賽 |
-| `python -m flyarena daily 名稱` | 收盤後重播聯賽、產生今日戰報 → `leagues/名稱/reports/latest.html` |
-| `run_daily.bat 名稱` | 只在本機產生今日戰報並打開（公開網站由 GitHub Actions 更新） |
+| `python -m flyarena daily 名稱` | 收盤後重播聯賽、產生今日戰報與 dashboard 本機預覽（`preview/`） |
+| `./run_daily.sh 名稱`（Mac）／`run_daily.bat 名稱`（Windows） | 同上並自動打開；不影響公開網站 |
 | `python -m pytest -q` | 核心正確性測試 |
 
 所有指令都可加 `--config 其他設定檔.json`，方便同時比較不同賽制。
 
 ## Dashboard（可公開在 GitHub Pages）
 
-`daily` 每天會順便更新 `docs/index.html`；只想重建時用 `python -m flyarena site 名稱 --offline`。
+**公開網站 `docs/` 只由 GitHub Actions 產生**（`daily --publish`）。在本機執行 `daily` 或
+`python -m flyarena site 名稱 --offline` 只會輸出預覽到 `preview/index.html`，不改 `docs/` 和 `profiles.json`，
+所以不會和雲端每天的推送衝突。
 網頁是單一 HTML 檔（資料內嵌），直接雙擊就能看，也能原封不動放上 GitHub Pages。
 
 - 每隻果蠅自動取暱稱（真實果蠅突變基因名）、推算個性、生成像素頭像。

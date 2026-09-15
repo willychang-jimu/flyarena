@@ -1,0 +1,8 @@
+# 讓 Windows 與 Mac 使用同一份檔案時換行格式一致
+* text=auto
+*.bat text eol=crlf
+*.sh text eol=lf
+*.npz binary
+*.png binary
+*.jpg binary
+*.webp binary

@@ -36,7 +36,7 @@ jobs:
         run: python -X utf8 -m pytest -q
 
       - name: 更新資料、重播聯賽、產生 dashboard
-        run: python -X utf8 -m flyarena daily survivors-2026
+        run: python -X utf8 -m flyarena daily survivors-2026 --publish
 
       - name: 有變更才推送
         run: |

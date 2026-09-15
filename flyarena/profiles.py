@@ -121,7 +121,8 @@ def _auto(row, pop, prev, taken):
             "gene": gene, "gene_note": note, "traits": t}
 
 
-def build(folder, rows):
+def build(folder, rows, save=True):
+    """save=False：只在記憶體中產生（本機預覽用），不改寫 profiles.json，避免和雲端推送衝突。"""
     path = Path(folder) / "profiles.json"
     old = json.loads(path.read_text(encoding="utf-8"))["flies"] if path.exists() else {}
     pop = [r for r in rows if not (r.get("meta") or {}).get("control")]
@@ -147,5 +148,6 @@ def build(folder, rows):
         flies[name] = prof
     doc = {"_說明": "可修改 nickname、title、emoji、bio、avatar（avatars/ 資料夾內的檔名）；改過的欄位不會被覆蓋",
            "flies": flies}
-    path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
+    if save:
+        path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
     return flies

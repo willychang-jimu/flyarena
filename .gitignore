@@ -4,6 +4,8 @@ __pycache__/
 data/
 runs/
 reports/
+# 本機 dashboard 預覽（公開網站 docs/ 只由 GitHub Actions 產生）
+preview/
 # Claude 本機設定（含本機路徑）
 .claude/
 # 聯賽：雲端重播需要的設定、名冊、大腦存檔與角色檔要上傳；每日快照與本機戰報不上傳

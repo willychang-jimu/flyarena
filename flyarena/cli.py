@@ -83,13 +83,19 @@ def cmd_daily(a, cfg):
         print(f"  {tag} {r['name']:10s} 今日 {today:+.2%}  累積 {r['return']:+.1%}  Sharpe {r['sharpe']:+.2f}")
     print("戰報：", path)
     if not a.no_site:
-        print("Dashboard：", dashboard.build(result, snap, a.out))
+        _site(a, result, snap)
+
+
+def _site(a, result, snap):
+    out = a.out or ROOT / ("docs" if a.publish else "preview")
+    path = dashboard.build(result, snap, out, save_profiles=a.publish)
+    print("公開網站：" if a.publish else "本機預覽（不影響公開網站）：", path)
 
 
 def cmd_site(a, cfg):
     result = league.replay(a.name, refresh=not a.offline)
     snap = league.snapshot(result)
-    print("Dashboard：", dashboard.build(result, snap, a.out))
+    _site(a, result, snap)
     print("角色檔（可修改暱稱、個性、頭像）：", league.LEAGUES / a.name / "profiles.json")
 
 
@@ -115,12 +121,15 @@ def main(argv=None):
     s = sub.add_parser("daily", help="每日收盤後：重播聯賽並產生戰報")
     s.add_argument("name")
     s.add_argument("--offline", action="store_true", help="不更新資料，用本機快取")
-    s.add_argument("--no-site", action="store_true", help="不更新 dashboard")
-    s.add_argument("--out", default=str(ROOT / "docs"), help="dashboard 輸出資料夾（GitHub Pages 用 docs/）")
-    s = sub.add_parser("site", help="只重建 dashboard（改完 profiles.json 或頭像後使用）")
+    s.add_argument("--no-site", action="store_true", help="不產生 dashboard")
+    daily_parser = s
+    s = sub.add_parser("site", help="只重建 dashboard（改完 profiles.json 或頭像後預覽）")
     s.add_argument("name")
     s.add_argument("--offline", action="store_true", help="不更新資料，用本機快取")
-    s.add_argument("--out", default=str(ROOT / "docs"), help="dashboard 輸出資料夾")
+    for s in (daily_parser, s):
+        s.add_argument("--publish", action="store_true",
+                       help="寫入公開網站 docs/ 並更新 profiles.json（給 GitHub Actions 用；預設只輸出本機預覽 preview/）")
+        s.add_argument("--out", help="自訂 dashboard 輸出資料夾")
     a = p.parse_args(argv)
     cfg = load_config(a.config)
     {"fetch": cmd_fetch, "probe": cmd_probe, "tournament": cmd_tournament,
