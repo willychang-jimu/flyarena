@@ -4,7 +4,6 @@
 只放模擬成績、報酬率曲線與決策紀錄，不放原始股價。
 """
 
-import datetime as dt
 import json
 from pathlib import Path
 
@@ -87,8 +86,8 @@ def payload(result, snap, out_dir):
             "benchmark_total": _num(snap["benchmark_total"]), "benchmark_today": _num(snap["benchmark_today"]),
             "fingerprint": snap["fingerprint"], "reward_mode": cfg["reward"]["mode"],
             "capital": capital, "order_value": cfg["broker"]["order_value"],
+            # 不放產生時間：資料沒變時網頁內容完全相同，每日腳本就不會推送多餘的 commit
             "trade_every_days": cfg["broker"]["trade_every_days"],
-            "generated": dt.datetime.now().isoformat(timespec="minutes"),
         },
         "dates": dates,
         "benchmark": [_num(v / bench.iloc[0] - 1) for v in bench],
