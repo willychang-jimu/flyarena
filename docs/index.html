@@ -157,6 +157,12 @@ th.l, td.l { text-align: left; }
   -webkit-mask-image: radial-gradient(circle at 50% 46%, #000 54%, rgba(0, 0, 0, .55) 70%, transparent 84%);
   mask-image: radial-gradient(circle at 50% 46%, #000 54%, rgba(0, 0, 0, .55) 70%, transparent 84%);
 }
+/* 去背圖：不需要柔化，直接站在多層背景上，只加投影 */
+.card-art img.cut {
+  -webkit-mask-image: none; mask-image: none;
+  object-fit: contain; padding: 6% 6% 4%;
+  filter: drop-shadow(0 8px 10px rgba(29, 27, 25, .28));
+}
 /* 名牌：漸層、內光，稀有卡再加一道流動反光 */
 .card-name {
   position: relative; overflow: hidden; border-radius: 999px; color: #fff; text-align: center;
