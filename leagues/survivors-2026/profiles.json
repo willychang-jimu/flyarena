@@ -6,7 +6,7 @@
       "title": "買進持有對照組",
       "emoji": "👴",
       "bio": "買到部位上限就抱著不放。大盤上漲時，任何偏多的交易員都會看起來像高手。",
-      "avatar": "ff-uncle.webp",
+      "avatar": "ff-uncle.cut.webp",
       "gene": null,
       "gene_note": null,
       "traits": null,
@@ -27,7 +27,7 @@
       "title": "學霸",
       "emoji": "🎓",
       "bio": "每次獎懲後大腦改變得最多，學得快也可能忘得快。第 0 代，初代果蠅。暱稱典故：rutabaga——學習記憶突變，蘑菇體裡的 cAMP 訊號出了問題。",
-      "avatar": "ff-turnip.webp",
+      "avatar": "ff-turnip.cut.webp",
       "gene": "rutabaga",
       "gene_note": "學習記憶突變，蘑菇體裡的 cAMP 訊號出了問題",
       "traits": {
@@ -55,7 +55,7 @@
       "title": "長記性",
       "emoji": "🧠",
       "bio": "記憶痕跡消退得慢，好幾天前的教訓都還記得。第 0 代，初代果蠅。暱稱典故：ebony——身體顏色變深的突變。",
-      "avatar": "ff-ebony.webp",
+      "avatar": "ff-ebony.cut.webp",
       "gene": "ebony",
       "gene_note": "身體顏色變深的突變",
       "traits": {
@@ -83,7 +83,7 @@
       "title": "均衡",
       "emoji": "⚖️",
       "bio": "各項特質都在族群中段，沒有明顯偏好。第 0 代，初代果蠅。暱稱典故：timeless——和 period 搭檔運作的生理時鐘基因。",
-      "avatar": "ff-eternal.webp",
+      "avatar": "ff-eternal.cut.webp",
       "gene": "timeless",
       "gene_note": "和 period 搭檔運作的生理時鐘基因",
       "traits": {
@@ -111,7 +111,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 1 代，父親是 fly-005。暱稱典故：hedgehog——胚胎發育基因，突變的幼蟲表面長滿細刺。",
-      "avatar": "ff-hedgehog.webp",
+      "avatar": "ff-hedgehog.cut.webp",
       "gene": "hedgehog",
       "gene_note": "胚胎發育基因，突變的幼蟲表面長滿細刺",
       "traits": {
@@ -139,7 +139,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 1 代，父親是 fly-011。暱稱典故：couch potato——活動量明顯變少的突變。",
-      "avatar": "ff-couch.webp",
+      "avatar": "ff-couch.cut.webp",
       "gene": "couch potato",
       "gene_note": "活動量明顯變少的突變",
       "traits": {
@@ -167,7 +167,7 @@
       "title": "衝動多頭",
       "emoji": "🔥",
       "bio": "出手頻繁、偏愛買進，看到機會就衝。第 1 代，父親是 fly-007。暱稱典故：Notch——突變後翅膀邊緣出現缺口，是重要的細胞訊號基因。",
-      "avatar": "ff-notch.webp",
+      "avatar": "ff-notch.cut.webp",
       "gene": "Notch",
       "gene_note": "突變後翅膀邊緣出現缺口，是重要的細胞訊號基因",
       "traits": {
@@ -195,7 +195,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 2 代，父親是 fly-018。暱稱典故：tinman——心臟發育基因，突變的胚胎長不出心臟，名字來自綠野仙蹤。",
-      "avatar": "ff-tinman.webp",
+      "avatar": "ff-tinman.cut.webp",
       "gene": "tinman",
       "gene_note": "心臟發育基因，突變的胚胎長不出心臟，名字來自綠野仙蹤",
       "traits": {
@@ -223,7 +223,7 @@
       "title": "衝動多頭",
       "emoji": "🔥",
       "bio": "出手頻繁、偏愛買進，看到機會就衝。第 1 代，父親是 fly-002。暱稱典故：cheapdate——對酒精特別敏感、一喝就倒的突變。",
-      "avatar": "ff-tipsy.webp",
+      "avatar": "ff-tipsy.cut.webp",
       "gene": "cheapdate",
       "gene_note": "對酒精特別敏感、一喝就倒的突變",
       "traits": {
@@ -251,7 +251,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 2 代，父親是 fly-016。暱稱典故：Shaker——麻醉時腳會抖個不停的突變，是鉀離子通道基因。",
-      "avatar": "ff-shaker.webp",
+      "avatar": "ff-shaker.cut.webp",
       "gene": "Shaker",
       "gene_note": "麻醉時腳會抖個不停的突變，是鉀離子通道基因",
       "traits": {
@@ -279,7 +279,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 3 代，父親是 fly-027。暱稱典故：Bar——複眼縮成細長棒狀的突變。",
-      "avatar": "ff-bar.webp",
+      "avatar": "ff-bar.cut.webp",
       "gene": "Bar",
       "gene_note": "複眼縮成細長棒狀的突變",
       "traits": {
@@ -307,7 +307,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 3 代，父親是 fly-021。暱稱典故：Hyperkinetic——腳動個不停的突變。",
-      "avatar": "ff-hyper.webp",
+      "avatar": "ff-hyper.cut.webp",
       "gene": "Hyperkinetic",
       "gene_note": "腳動個不停的突變",
       "traits": {
@@ -335,7 +335,7 @@
       "title": "長記性",
       "emoji": "🧠",
       "bio": "記憶痕跡消退得慢，好幾天前的教訓都還記得。第 2 代，父親是 fly-025。暱稱典故：Toll——發現者驚呼德文「Toll！（太棒了）」，後來證實是先天免疫的關鍵。",
-      "avatar": "ff-thor.webp",
+      "avatar": "ff-thor.cut.webp",
       "gene": "Toll",
       "gene_note": "發現者驚呼德文「Toll！（太棒了）」，後來證實是先天免疫的關鍵",
       "traits": {
@@ -363,7 +363,7 @@
       "title": "冷靜保守",
       "emoji": "🧊",
       "bio": "決策幾乎不帶隨機性，行為最穩定可預測。第 2 代，父親是 fly-016。暱稱典故：swiss cheese——突變後腦中出現空洞，像瑞士起司。",
-      "avatar": "ff-cheese.webp",
+      "avatar": "ff-cheese.cut.webp",
       "gene": "swiss cheese",
       "gene_note": "突變後腦中出現空洞，像瑞士起司",
       "traits": {
@@ -391,7 +391,7 @@
       "title": "佛系觀望",
       "emoji": "🧘",
       "bio": "大多數時候按兵不動，寧可錯過也不願做錯。第 4 代，父親是 fly-030。暱稱典故：fruitless——影響雄蠅求偶行為的基因。",
-      "avatar": "ff-fruitless.webp",
+      "avatar": "ff-fruitless.cut.webp",
       "gene": "fruitless",
       "gene_note": "影響雄蠅求偶行為的基因",
       "traits": {
@@ -419,7 +419,7 @@
       "title": "長記性",
       "emoji": "🧠",
       "bio": "記憶痕跡消退得慢，好幾天前的教訓都還記得。第 3 代，父親是 fly-031。暱稱典故：radish——缺少「抗麻醉記憶」的突變。",
-      "avatar": "ff-radish.webp",
+      "avatar": "ff-radish.cut.webp",
       "gene": "radish",
       "gene_note": "缺少「抗麻醉記憶」的突變",
       "traits": {
@@ -447,7 +447,7 @@
       "title": "衝動多頭",
       "emoji": "🔥",
       "bio": "出手頻繁、偏愛買進，看到機會就衝。第 2 代，父親是 fly-018。暱稱典故：Curly——翅膀向上捲起的突變。",
-      "avatar": "ff-curly.webp",
+      "avatar": "ff-curly.cut.webp",
       "gene": "Curly",
       "gene_note": "翅膀向上捲起的突變",
       "traits": {
@@ -475,7 +475,7 @@
       "title": "動能規則對照組",
       "emoji": "📈",
       "bio": "20 日漲勢和均線乖離都強就買、都弱就賣的簡單規則。",
-      "avatar": "ff-chaser.webp",
+      "avatar": "ff-chaser.cut.webp",
       "gene": null,
       "gene_note": null,
       "traits": null,
@@ -496,7 +496,7 @@
       "title": "隨機對照組",
       "emoji": "🎲",
       "bio": "每天隨機買、賣或不動。果蠅要贏過牠，才能說不是運氣。",
-      "avatar": "ff-dice.webp",
+      "avatar": "ff-dice.cut.webp",
       "gene": null,
       "gene_note": null,
       "traits": null,
