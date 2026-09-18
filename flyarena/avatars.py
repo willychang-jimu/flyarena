@@ -244,6 +244,24 @@ def fly_svg(name, profile):
     )
 
 
+def has_alpha(path):
+    """圖片是不是去背的（含透明區域）。去背圖不需要邊緣柔化，卡片的多層特效可以完整露出。"""
+    if Path(path).suffix.lower() == ".svg":
+        return False
+    try:
+        from PIL import Image
+    except ImportError:
+        return False
+    try:
+        with Image.open(path) as im:
+            if "A" not in im.getbands():
+                return False
+            alpha = im.convert("RGBA").getchannel("A")
+            return alpha.getextrema()[0] < 250  # 有真正透明的像素才算
+    except OSError:
+        return False
+
+
 def resolve(name, profile, out_dir):
     """產生或複製頭像到 out_dir/avatars/，回傳網頁用的相對路徑。"""
     folder = Path(out_dir) / "avatars"

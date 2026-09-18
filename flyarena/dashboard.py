@@ -80,7 +80,8 @@ def payload(result, snap, out_dir, save_profiles=False, honours=None):
             "id": t.name,
             "nickname": p["nickname"], "title": p["title"], "emoji": p["emoji"], "bio": p["bio"],
             "gene": p.get("gene"), "gene_note": p.get("gene_note"),
-            "avatar": avatars.resolve(t.name, p, out_dir),
+            "avatar": (avatar := avatars.resolve(t.name, p, out_dir)),
+            "cut": avatars.has_alpha(out_dir / avatar),  # 去背圖：不套邊緣柔化
             "card": dict(zip(("from", "to", "pill", "code"), cards.colours(t.name, p))),
             "titles": {"season": seasons_won, "league": leagues_won, "tier": tier, "tier_name": tier_name},
             "control": p["control"], "active": r["active"],

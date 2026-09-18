@@ -71,15 +71,28 @@ EXTRA_EN = {"holes": "cheese-yellow body dotted with holes", "motion": "cartoon 
             "curly": "tightly curled antennae", "notch": "wing edges with scalloped notches"}
 
 
-def slot(profile):
-    """這隻果蠅對應到設計稿的哪張卡（由 profiles.json 的 avatar 檔名判斷）。"""
-    avatar = profile.get("avatar") or ""
-    return avatar.rsplit(".", 1)[0] if avatar.rsplit(".", 1)[0] in CARDS else None
+# 基因（與對照組）對應到設計稿的卡片，換頭像檔名也不會影響配色
+GENE_SLOT = {
+    "cheapdate": "ff-tipsy", "tinman": "ff-tinman", "rutabaga": "ff-turnip", "Curly": "ff-curly",
+    "radish": "ff-radish", "swiss cheese": "ff-cheese", "Toll": "ff-thor", "hedgehog": "ff-hedgehog",
+    "Notch": "ff-notch", "timeless": "ff-eternal", "ebony": "ff-ebony", "couch potato": "ff-couch",
+    "Hyperkinetic": "ff-hyper", "Shaker": "ff-shaker", "Bar": "ff-bar", "fruitless": "ff-fruitless",
+    "random": "ff-dice", "buyhold": "ff-uncle", "momentum": "ff-chaser",
+}
+
+
+def slot(name, profile):
+    """這隻果蠅對應到設計稿的哪張卡：先看基因，其次看頭像檔名。"""
+    key = GENE_SLOT.get(profile.get("gene")) or GENE_SLOT.get(name)
+    if key:
+        return key
+    stem = (profile.get("avatar") or "").rsplit(".", 1)[0]
+    return stem if stem in CARDS else None
 
 
 def colours(name, profile):
     """回傳 (漸層起, 漸層迄, 名牌色, 編號代碼, 背景色描述)。新果蠅依名字自動配色。"""
-    key = slot(profile)
+    key = slot(name, profile)
     if key:
         return CARDS[key]
     hue = int(hashlib.sha256(name.encode()).hexdigest(), 16) % 360
@@ -112,8 +125,9 @@ def prompt(name, profile, extra=""):
         f"Subject: {subject}.",
         f"Body plan: {BODY_PLAN}.",
         f"Extra: {extra}." if extra else "",
-        f"Background: flat {backdrop} pastel backdrop, no props beyond those described, "
-        "soft contact shadow under the character.",
+        "Background: fully transparent background (export as PNG with alpha), no backdrop, no scenery, "
+        "no colour fill behind the character; keep only a soft contact shadow directly under its feet. "
+        f"（若工具不支援透明背景，改用單色 {backdrop} pastel 背景。）",
         f"Framing: {FRAMING}.",
         f"Series consistency: {SERIES}.",
         f"（暱稱典故：{profile.get('gene')}——{note}）" if note else "",

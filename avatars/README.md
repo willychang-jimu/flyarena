@@ -1,6 +1,8 @@
 # 自訂果蠅頭像
 
 1. 把圖片放在這個資料夾，例如 `avatars/淺酌.png`（支援 png、jpg、webp、svg，建議正方形、至少 96×96）。
+   **建議用去背的透明 PNG**：卡片會讓角色直接站在多層特效背景上，並自動加投影；
+   不透明的方形圖也可以，系統會把邊緣柔化後融入卡面。兩種混用沒問題。
 2. 打開 `leagues/<聯賽名稱>/profiles.json`，找到那隻果蠅，把 `"avatar": null` 改成 `"avatar": "淺酌.png"`。
    （`null` 代表使用程式自動生成的卡通果蠅頭像。）
 3. 想先在本機看效果：`python -m flyarena site <聯賽名稱> --offline`，打開 `preview/index.html`。
