@@ -133,7 +133,7 @@ th.l, td.l { text-align: left; }
 .fly.selected { box-shadow: 0 0 0 3px var(--s1), 0 12px 26px rgba(29, 27, 25, .2); }
 .fly.out { filter: grayscale(.5); opacity: .72; }
 .card-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 11px;
-  letter-spacing: .08em; color: rgba(255, 255, 255, .96); text-shadow: 0 1px 2px rgba(0, 0, 0, .3); font-variant-numeric: tabular-nums; }
+  letter-spacing: .08em; color: rgba(29, 27, 25, .82); text-shadow: 0 1px 2px rgba(255, 255, 255, .6); font-variant-numeric: tabular-nums; }
 .card-art { border-radius: 18px; overflow: hidden; background: rgba(255, 255, 255, .5); aspect-ratio: 1 / 1; }
 .card-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .card-name { border-radius: 999px; color: #fff; text-align: center; padding: 8px 6px; font-size: 19px; font-weight: 800; letter-spacing: .04em; }
@@ -150,30 +150,38 @@ th.l, td.l { text-align: left; }
 .fly { position: relative; overflow: hidden; }
 .fly > * { position: relative; z-index: 2; }
 .fly::before, .fly::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1; opacity: 0; transition: opacity .25s ease; }
-.fly::before { background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .75), rgba(255, 255, 255, 0) 48%); }
+/* 光暈：範圍大、邊緣柔和，不要集中成一個亮點 */
+.fly::before {
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .22) 30%, rgba(255, 255, 255, .08) 55%, transparent 82%);
+}
 .fly:hover::before, .fly:focus-visible::before { opacity: 1; }
-.fly.holo::after, .fly.gold::after, .fly.rainbow::after { opacity: .75; }
+.fly.holo::after, .fly.gold::after, .fly.rainbow::after { opacity: .8; }
+/* 彩光：平滑漸層，不用條紋 */
 .fly.holo::after {
-  background: repeating-linear-gradient(115deg, rgba(255, 0, 140, .55) 0 7%, rgba(255, 205, 0, .55) 7% 14%,
-    rgba(0, 255, 190, .55) 14% 21%, rgba(0, 150, 255, .55) 21% 28%);
-  background-size: 260% 260%; background-position: var(--mx, 50%) var(--my, 50%);
+  background: linear-gradient(118deg, #ffa8d8 0%, #ffd9a0 22%, #fff5b0 40%, #a8f5d8 58%, #9fd8ff 76%, #cbb8ff 100%);
+  background-size: 300% 300%; background-position: var(--mx, 50%) var(--my, 50%);
+  filter: blur(8px); transform: scale(1.06);
 }
 .fly.gold::after {
   background:
-    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, .95) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, .85) 0 1px, transparent 1.8px),
-    linear-gradient(115deg, #ffe7a8, #fffaf0 35%, #d8a93c 62%, #fff3cc);
-  background-size: 24px 24px, 32px 32px, 260% 260%;
+    radial-gradient(circle at 25% 35%, rgba(255, 255, 255, .85) 0 1px, transparent 2.2px),
+    linear-gradient(118deg, #f6cf62 0%, #ffe9a8 24%, #fffbe8 44%, #c9992a 70%, #ffdf8e 100%);
+  background-size: 38px 38px, 300% 300%;
   background-position: var(--mx, 50%) var(--my, 50%);
+  filter: blur(4px) saturate(1.15); transform: scale(1.04);
 }
 .fly.rainbow::after {
-  background: conic-gradient(from calc(var(--angle, 0) * 1deg), #ff6fae, #ffb36b, #fff07a, #7dffc4, #79ccff, #b79bff, #ff6fae);
+  background: conic-gradient(from calc(var(--angle, 0) * 1deg),
+    #ffb3d1, #ffd9a8, #fff3b0, #b5f2d2, #a8dcff, #cdbcff, #ffb3d1);
+  filter: blur(12px); transform: scale(1.12);
 }
 /* 角色圖：只加反光，不染色 */
 .card-art { position: relative; z-index: 3; }
 .card-art::after {
   content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .25s ease;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .5), transparent 55%);
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, .3) 0%, rgba(255, 255, 255, .14) 35%, transparent 78%);
   mix-blend-mode: screen;
 }
 .fly:hover .card-art::after { opacity: 1; }
