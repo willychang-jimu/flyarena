@@ -296,19 +296,19 @@
 
   // ---- 角色卡 ----
   function renderCards() {
-    $("#cards").replaceChildren(...ordered.filter(visible).map((t) =>
-      el("button", {
+    $("#cards").replaceChildren(...ordered.filter(visible).map((t) => {
+      const c = t.card;
+      const badge = t.control ? "對照組" : t.active ? `#${String(rank[t.id]).padStart(2, "0")}` : `第 ${t.eliminated.season} 季淘汰`;
+      return el("button", {
         type: "button", class: ["fly", t.active || t.control ? "" : "out", t.id === state.selected ? "selected" : ""].join(" "),
-        "aria-pressed": String(t.id === state.selected), onclick: () => select(t.id),
+        style: `background:linear-gradient(170deg,${c.from},${c.to})`,
+        "aria-pressed": String(t.id === state.selected), title: t.bio, onclick: () => select(t.id),
       },
-        el("div", { class: "fly-head" }, avatar(t, "lg"),
-          el("div", {}, el("div", { class: "name", text: label(t) }),
-            el("div", { class: "meta", text: t.control ? "對照組" : `${t.id}・第 ${t.generation} 代` }),
-            el("div", {}, el("span", { class: "tag", text: t.title }), " ", status(t)))),
-        el("p", { class: "bio", text: t.bio.split("。")[0] + "。" }),
-        el("div", { class: "stat" }, el("span", { class: "ink2", text: "累積報酬" }), delta(t.stats.return)),
-        el("div", { class: "stat" }, el("span", { class: "ink2", text: "Sharpe" }), el("span", { class: "num", text: fmt(t.stats.sharpe) })),
-        traitBlock(t))));
+        el("div", { class: "card-top" }, el("span", { text: badge }), el("span", { text: c.code })),
+        el("div", { class: "card-art" }, el("img", { src: t.avatar, alt: "", loading: "lazy" })),
+        el("div", { class: "card-name", style: `background:${c.pill}`, text: t.nickname }),
+        el("div", { class: "card-foot" }, el("span", { text: t.title }), delta(t.stats.return)));
+    }));
   }
 
   // ---- 家族樹、淘汰紀錄、說明 ----

@@ -8,7 +8,7 @@ import html
 import json
 from pathlib import Path
 
-from . import avatars, league, profiles
+from . import avatars, cards, league, profiles
 from .brains import ACTION_NAMES, HOLD
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -57,6 +57,7 @@ def payload(result, snap, out_dir, save_profiles=False):
             "nickname": p["nickname"], "title": p["title"], "emoji": p["emoji"], "bio": p["bio"],
             "gene": p.get("gene"), "gene_note": p.get("gene_note"),
             "avatar": avatars.resolve(t.name, p, out_dir),
+            "card": dict(zip(("from", "to", "pill", "code"), cards.colours(t.name, p))),
             "control": p["control"], "active": r["active"],
             "eliminated": eliminated.get(t.name),
             "generation": p["family"]["generation"], "parent": p["family"]["parent"],

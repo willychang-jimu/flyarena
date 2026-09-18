@@ -45,6 +45,7 @@ python -m venv .venv
 | `python -m flyarena season-report 名稱` | 季賽報告（Markdown）：各季排名、前三名總結、淘汰果蠅失敗報告 → `notes/season-reports/` |
 | `python -m flyarena season-create 名稱 --title 標題 --start 開賽日 --veterans-from 上一屆` | 建立新一屆：市值排名選股、老將帶記憶參賽、新秀補滿 |
 | `python -m flyarena publish` | 發布所有屆（雲端每天執行）：各屆 dashboard、季賽報告、總覽首頁；加 `--preview` 只輸出本機預覽 |
+| `python -m flyarena prompts 賽季 [--all]` | 為還沒有角色圖的果蠅產生影像生成提示詞 → `notes/prompts/` |
 | `python -m pytest -q` | 核心正確性測試 |
 
 研究筆記與常見問題（修改限制、個性遺傳、賽制調整、果蠅的能力）見 [notes/FAQ.md](notes/FAQ.md)。
@@ -70,9 +71,12 @@ python -m venv .venv
 所以不會和雲端每天的推送衝突。
 網頁是單一 HTML 檔（資料內嵌），直接雙擊就能看，也能原封不動放上 GitHub Pages。
 
-- 每隻果蠅自動取暱稱（真實果蠅突變基因名）、推算個性，並自動生成卡通頭像（SVG）：
-  底色由名字決定，配件依基因典故與個性挑選（學士帽、眼鏡、頭巾、光環、刺、酒瓶、紅蘿蔔、骰子…），
-  新加入的果蠅不必畫圖也會有風格一致的頭像。
+- 角色卡採用卡片產生器的版型：正方形卡、專屬漸層底色、角色圖、圓角名牌，點卡片看完整資料。
+- 每隻果蠅自動取暱稱（真實果蠅突變基因名）並推算個性。
+- 角色圖放在 `avatars/`，用 `profiles.json` 的 `avatar` 指定。新果蠅可用 `prompts` 指令取得
+  同一套格式的英文提示詞（畫風、身形、背景、構圖、系列一致性都寫好），生成 1:1 圖片後放進 `avatars/` 即可。
+- 還沒有角色圖的果蠅，會自動生成卡通頭像（SVG）遞補：底色由名字決定，配件依基因典故與個性挑選
+  （學士帽、眼鏡、頭巾、光環、刺、酒瓶、紅蘿蔔、骰子…），所以不會有果蠅沒頭像。
 - 修改暱稱、個性、頭像：編輯 `leagues/名稱/profiles.json`，自訂圖片放 `avatars/`（見 `avatars/README.md`）。
 - 內容只有模擬成績、報酬率曲線與決策紀錄，不含原始股價；頁首固定顯示「模擬實驗、非投資建議」。
 

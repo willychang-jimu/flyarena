@@ -121,16 +121,23 @@ th.l, td.l { text-align: left; }
 .chip.BUY::before { content: "▲ "; color: var(--buy); }
 .chip.SELL::before { content: "▼ "; color: var(--sell); }
 
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-.fly { text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; }
-.fly:hover, .fly:focus-visible { border-color: var(--s1); outline: none; }
-.fly.selected { box-shadow: inset 0 0 0 2px var(--s1); }
-.fly.out { opacity: .6; }
-.fly-head { display: flex; gap: 12px; align-items: center; }
-.fly-head .name { font-weight: 600; font-size: 15px; }
-.fly-head .meta { color: var(--muted); font-size: 12px; }
-.fly .bio { color: var(--ink-2); font-size: 12px; margin: 0; }
-.fly .stat { display: flex; justify-content: space-between; font-size: 13px; }
+/* 角色卡：沿用卡片產生器的版型（正方形、上方編號、圖片框、名牌） */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+.fly {
+  --up: #c92a2a; --down: #0b7a3b;
+  border: 0; border-radius: 26px; padding: 14px; cursor: pointer; text-align: left; color: #1d1b19;
+  display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 24px rgba(29, 27, 25, .12);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.fly:hover, .fly:focus-visible { transform: translateY(-2px); outline: none; box-shadow: 0 14px 30px rgba(29, 27, 25, .2); }
+.fly.selected { box-shadow: 0 0 0 3px var(--s1), 0 12px 26px rgba(29, 27, 25, .2); }
+.fly.out { filter: grayscale(.5); opacity: .72; }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 11px;
+  letter-spacing: .08em; color: rgba(255, 255, 255, .96); text-shadow: 0 1px 2px rgba(0, 0, 0, .3); font-variant-numeric: tabular-nums; }
+.card-art { border-radius: 18px; overflow: hidden; background: rgba(255, 255, 255, .5); aspect-ratio: 1 / 1; }
+.card-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-name { border-radius: 999px; color: #fff; text-align: center; padding: 8px 6px; font-size: 19px; font-weight: 800; letter-spacing: .04em; }
+.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: rgba(29, 27, 25, .74); }
 
 .traits { display: grid; grid-template-columns: 4em minmax(0, 1fr); gap: 4px 8px; align-items: center; font-size: 12px; color: var(--ink-2); }
 .meter { height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; }

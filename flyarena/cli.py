@@ -162,6 +162,33 @@ def cmd_season_report(a, cfg):
         print(e)
 
 
+def cmd_prompts(a, cfg):
+    """為還沒有角色圖的果蠅產生提示詞，貼到影像生成工具就能畫出風格一致的圖。"""
+    from . import cards
+
+    try:
+        result = league.replay(a.name, refresh=False)
+    except league.NotStarted as e:
+        print(f"{e}；等開賽、果蠅拿到暱稱之後再產生提示詞")
+        return
+    snap = league.snapshot(result)
+    profs = profiles.build(league.LEAGUES / a.name, snap["rows"], save=False)
+    todo = [(n, p) for n, p in profs.items() if a.all or not p.get("avatar")]
+    if not todo:
+        print("每隻果蠅都有角色圖了。想全部重做請加 --all")
+        return
+    out = ROOT / "notes" / "prompts"
+    out.mkdir(parents=True, exist_ok=True)
+    path = out / f"{a.name}.md"
+    body = [f"# {a.name} 角色圖提示詞", "",
+            "把下面每一段貼到影像生成工具，生成 1:1 圖片後放進 `avatars/`，",
+            "再到 `leagues/<賽季>/profiles.json` 把該果蠅的 `avatar` 填成檔名即可。", ""]
+    for name, p in todo:
+        body += [f"## {p['nickname']}（{name}・{p['title']}）", "", "```", cards.prompt(name, p, a.extra), "```", ""]
+    path.write_text("\n".join(body), encoding="utf-8")
+    print(f"{len(todo)} 隻的提示詞 → {path}")
+
+
 def cmd_publish(a, cfg):
     """發布清單上的所有賽季：各自的 dashboard、季賽報告，以及賽季總覽首頁。"""
     from . import season_report
@@ -250,6 +277,11 @@ def main(argv=None):
     s.add_argument("name")
     s.add_argument("--offline", action="store_true", help="不更新資料，用本機快取")
 
+    s = sub.add_parser("prompts", help="產生角色圖提示詞（給還沒有圖的果蠅），輸出到 notes/prompts/")
+    s.add_argument("name")
+    s.add_argument("--all", action="store_true", help="連已經有圖的果蠅也產生")
+    s.add_argument("--extra", default="", help="追加描述，例如：手裡捏著一張虧損對帳單")
+
     s = sub.add_parser("publish", help="發布所有賽季（雲端每日執行）：dashboard、季賽報告、賽季總覽首頁")
     s.add_argument("--preview", action="store_true", help="只輸出本機預覽 preview/，不改公開網站與角色檔")
     s.add_argument("--offline", action="store_true", help="不更新資料，用本機快取")
@@ -259,7 +291,7 @@ def main(argv=None):
     {"fetch": cmd_fetch, "probe": cmd_probe, "tournament": cmd_tournament,
      "league-create": cmd_league_create, "season-create": cmd_season_create,
      "daily": cmd_daily, "site": cmd_site, "season-report": cmd_season_report,
-     "publish": cmd_publish}[a.cmd](a, cfg)
+     "prompts": cmd_prompts, "publish": cmd_publish}[a.cmd](a, cfg)
 
 
 if __name__ == "__main__":
