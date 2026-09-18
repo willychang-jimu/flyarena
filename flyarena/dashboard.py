@@ -107,8 +107,12 @@ def build(result, snap, out_dir=None, save_profiles=False):
     out_dir = Path(out_dir) if out_dir else ROOT / "preview"
     out_dir.mkdir(parents=True, exist_ok=True)
     data = payload(result, snap, out_dir, save_profiles)
-    # 網站 logo：Windows 10 沒有 🪰 字型，改用像素果蠅
+    # 網站 logo：Windows 10 沒有 🪰 字型，改用自動生成的卡通果蠅
     (out_dir / "avatars" / "logo.svg").write_text(avatars.fly_svg("flyarena", {"title": "均衡"}), encoding="utf-8")
+    keep = {Path(t["avatar"]).name for t in data["traders"]} | {"logo.svg"}
+    for stale in (out_dir / "avatars").iterdir():  # 換過頭像後，舊檔案不要留在網站上
+        if stale.name not in keep:
+            stale.unlink()
     html = (TEMPLATE / "dashboard.html").read_text(encoding="utf-8")
     css = (TEMPLATE / "dashboard.css").read_text(encoding="utf-8")
     js = (TEMPLATE / "dashboard.js").read_text(encoding="utf-8")
