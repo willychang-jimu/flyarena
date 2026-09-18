@@ -8,7 +8,7 @@ import html
 import json
 from pathlib import Path
 
-from . import avatars, cards, league, profiles
+from . import analysis, avatars, cards, league, profiles
 from .brains import ACTION_NAMES, HOLD
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -32,10 +32,31 @@ def _num(x, digits=5):
     return round(x, digits) if x == x and abs(x) != float("inf") else None
 
 
-def payload(result, snap, out_dir, save_profiles=False):
+def champion(snap, rules):
+    """這一屆結束了嗎？結束的話，冠軍是排名第一的果蠅。"""
+    if not rules.get("end") or snap["date"] < rules["end"]:
+        return None
+    return next((r["name"] for r in snap["rows"]
+                 if r["active"] and not (r.get("meta") or {}).get("control")), None)
+
+
+def rarity(season_titles, league_titles):
+    """卡片稀有度：季冠軍→閃卡，1 屆冠軍→金卡，2 屆以上→彩虹卡。"""
+    if league_titles >= 2:
+        return "rainbow", "彩虹卡"
+    if league_titles == 1:
+        return "gold", "金卡"
+    if season_titles >= 1:
+        return "holo", "閃卡"
+    return "plain", "普卡"
+
+
+def payload(result, snap, out_dir, save_profiles=False, honours=None):
     cfg, market = result["cfg"], result["market"]
     capital = cfg["broker"]["capital"]
     names = {**SYMBOL_NAMES, **cfg.get("symbol_names", {})}
+    ranks = analysis.season_ranks(result, cfg)
+    champ = champion(snap, result["rules"])
     dates = [str(d.date()) for d in result["days"]]
     bench = market.bench.reindex(result["days"]).ffill()
     rows = {r["name"]: r for r in snap["rows"]}
@@ -50,6 +71,9 @@ def payload(result, snap, out_dir, save_profiles=False):
     traders = []
     for t in result["traders"]:
         r, p = rows[t.name], profs[t.name]
+        seasons_won = sum(1 for place in ranks.get(t.name, {}).values() if place == 1)
+        leagues_won = (honours or {}).get(t.name, 0) + (1 if champ == t.name else 0)
+        tier, tier_name = rarity(seasons_won, leagues_won) if not p["control"] else ("plain", "對照組")
         curve = dict(t.curve)
         journal = [e for e in t.journal if e["date"] in recent_days and e["action"] != HOLD and e.get("selected", True)][-40:]
         traders.append({
@@ -58,6 +82,7 @@ def payload(result, snap, out_dir, save_profiles=False):
             "gene": p.get("gene"), "gene_note": p.get("gene_note"),
             "avatar": avatars.resolve(t.name, p, out_dir),
             "card": dict(zip(("from", "to", "pill", "code"), cards.colours(t.name, p))),
+            "titles": {"season": seasons_won, "league": leagues_won, "tier": tier, "tier_name": tier_name},
             "control": p["control"], "active": r["active"],
             "eliminated": eliminated.get(t.name),
             "generation": p["family"]["generation"], "parent": p["family"]["parent"],
@@ -103,11 +128,12 @@ def payload(result, snap, out_dir, save_profiles=False):
     }
 
 
-def build(result, snap, out_dir=None, save_profiles=False):
-    """公開網站（docs/）由雲端用 save_profiles=True 產生；本機預覽輸出到 preview/ 且不改寫角色檔。"""
+def build(result, snap, out_dir=None, save_profiles=False, honours=None):
+    """公開網站（docs/）由雲端用 save_profiles=True 產生；本機預覽輸出到 preview/ 且不改寫角色檔。
+    honours：{果蠅: 之前幾屆的冠軍次數}，讓老將把冠軍頭銜帶到新一屆。"""
     out_dir = Path(out_dir) if out_dir else ROOT / "preview"
     out_dir.mkdir(parents=True, exist_ok=True)
-    data = payload(result, snap, out_dir, save_profiles)
+    data = payload(result, snap, out_dir, save_profiles, honours)
     # 網站 logo：Windows 10 沒有 🪰 字型，改用自動生成的卡通果蠅
     (out_dir / "avatars" / "logo.svg").write_text(avatars.fly_svg("flyarena", {"title": "均衡"}), encoding="utf-8")
     keep = {Path(t["avatar"]).name for t in data["traders"]} | {"logo.svg"}

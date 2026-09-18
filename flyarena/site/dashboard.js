@@ -295,19 +295,56 @@
   }
 
   // ---- 角色卡 ----
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function holoTracking(card) {
+    // 亮面反光與彩光跟著指標移動；卡片同時微微傾斜，像拿在手上看
+    const move = (e) => {
+      const b = card.getBoundingClientRect();
+      const x = ((e.clientX - b.left) / b.width) * 100;
+      const y = ((e.clientY - b.top) / b.height) * 100;
+      card.style.setProperty("--mx", `${x.toFixed(1)}%`);
+      card.style.setProperty("--my", `${y.toFixed(1)}%`);
+      card.style.setProperty("--angle", ((x + y) * 1.8).toFixed(0));
+      if (!REDUCED) card.style.transform = `perspective(900px) rotateY(${(x - 50) / 8}deg) rotateX(${(50 - y) / 9}deg) translateY(-2px)`;
+    };
+    const reset = () => {
+      card.style.transform = "";
+      card.style.setProperty("--mx", "50%");
+      card.style.setProperty("--my", "50%");
+    };
+    card.addEventListener("pointermove", move);
+    card.addEventListener("pointerleave", reset);
+    card.addEventListener("blur", reset);
+  }
+
   function renderCards() {
     $("#cards").replaceChildren(...ordered.filter(visible).map((t) => {
       const c = t.card;
+      const ttl = t.titles;
       const badge = t.control ? "對照組" : t.active ? `#${String(rank[t.id]).padStart(2, "0")}` : `第 ${t.eliminated.season} 季淘汰`;
-      return el("button", {
-        type: "button", class: ["fly", t.active || t.control ? "" : "out", t.id === state.selected ? "selected" : ""].join(" "),
+      const badges = [];
+      if (ttl.league) badges.push(el("span", { text: `🏆 屆冠軍 ×${ttl.league}` }));
+      if (ttl.season) badges.push(el("span", { text: `🥇 季冠軍 ×${ttl.season}` }));
+      const stat = (label, value) => el("div", {}, el("b", { text: value }), el("span", { text: label }));
+      const card = el("button", {
+        type: "button",
+        class: ["fly", ttl.tier, t.active || t.control ? "" : "out", t.id === state.selected ? "selected" : ""].join(" "),
         style: `background:linear-gradient(170deg,${c.from},${c.to})`,
         "aria-pressed": String(t.id === state.selected), title: t.bio, onclick: () => select(t.id),
       },
-        el("div", { class: "card-top" }, el("span", { text: badge }), el("span", { text: c.code })),
+        el("div", { class: "card-top" }, el("span", { text: badge }),
+          el("span", { class: "tier", text: t.control ? c.code : `${c.code}・${ttl.tier_name}` })),
         el("div", { class: "card-art" }, el("img", { src: t.avatar, alt: "", loading: "lazy" })),
+        badges.length ? el("div", { class: "card-badges" }, badges) : null,
         el("div", { class: "card-name", style: `background:${c.pill}`, text: t.nickname }),
-        el("div", { class: "card-foot" }, el("span", { text: t.title }), delta(t.stats.return)));
+        el("div", { class: "card-stats" },
+          stat("累積報酬", pct(t.stats.return, 0)),
+          stat("Sharpe", fmt(t.stats.sharpe, 1)),
+          stat("命中率", pct(t.stats.hit_rate, 0, false))),
+        el("div", { class: "card-foot" }, el("span", { text: t.title }), delta(t.stats.today_change, 2)));
+      holoTracking(card);
+      return card;
     }));
   }
 
@@ -342,6 +379,8 @@
       p(`每隻果蠅模擬本金 ${L.capital.toLocaleString()} 元，單筆 ${L.order_value.toLocaleString()} 元，每 ${L.trade_every_days} 個交易日決策一次，含手續費與證交稅。`),
       p("對照組：骰子（隨機交易）、存股阿伯（買進持有）、追高哥（簡單動能規則）。果蠅要穩定贏過牠們，才代表學到了東西；在大盤上漲時贏過骰子，並不稀奇。"),
       p("暱稱取自真實的果蠅突變基因，個性由每隻果蠅的大腦參數和交易行為自動推算。"),
+      p("角色卡的稀有度依戰績決定：拿過季冠軍（某一季結算時排第 1）是閃卡，奪下一屆冠軍是金卡，"
+        + "兩屆以上冠軍是彩虹卡；卡面顯示名次、累積報酬、Sharpe 與命中率，冠軍次數會跟著果蠅帶到下一屆。"),
     );
     $("#footer").textContent = `資料日期 ${L.date}・資料指紋 ${L.fingerprint}・網頁只含模擬成績，不含原始股價・非投資建議`;
   }

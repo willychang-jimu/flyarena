@@ -194,7 +194,7 @@ def cmd_publish(a, cfg):
     from . import season_report
 
     base = ROOT / ("preview" if a.preview else "docs")
-    cards = []
+    cards, honours = [], {}  # honours：累積各屆冠軍次數，決定卡片稀有度
     for name in json.loads(SEASONS.read_text(encoding="utf-8"))["seasons"]:
         _, rules = league.load_rules(name)
         card = {"name": name, "title": rules.get("title", name), "start": rules["start"], "end": rules.get("end")}
@@ -205,7 +205,10 @@ def cmd_publish(a, cfg):
             cards.append(dict(card, status="upcoming"))
             continue
         snap = league.snapshot(result)
-        dashboard.build(result, snap, base / name, save_profiles=not a.preview)
+        dashboard.build(result, snap, base / name, save_profiles=not a.preview, honours=honours)
+        winner = dashboard.champion(snap, rules)
+        if winner:
+            honours[winner] = honours.get(winner, 0) + 1
         report_dir = base / "reports" if a.preview else None
         season_report.build(name, result=result, out=report_dir)
         prof = profiles.build(league.LEAGUES / name, snap["rows"], save=False)
