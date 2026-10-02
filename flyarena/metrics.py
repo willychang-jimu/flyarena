@@ -8,13 +8,16 @@ from .brains import BUY, HOLD, SELL
 
 
 def performance(trader, capital):
-    if len(trader.curve) < 2:
-        return {}
-    eq = np.array([e for _, e in trader.curve], dtype=float)
+    """賽季剛開賽、資料不足兩天時仍回傳完整結構（數值為 0），避免後續計算缺欄位。"""
+    eq = np.array([e for _, e in trader.curve] or [capital], dtype=float)
+    fills = trader.broker.fills
+    if len(eq) < 2:
+        return {"return": eq[-1] / capital - 1, "cagr": 0.0, "vol": 0.0, "sharpe": 0.0,
+                "max_drawdown": 0.0, "trades": len(fills), "costs": trader.broker.costs,
+                "equity": float(eq[-1])}
     r = np.diff(np.log(eq))
     years = len(r) / 252
     peak = np.maximum.accumulate(eq)
-    fills = trader.broker.fills
     return {
         "return": eq[-1] / capital - 1,
         "cagr": (eq[-1] / capital) ** (1 / years) - 1 if years > 0 else 0.0,

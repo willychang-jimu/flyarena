@@ -51,11 +51,30 @@ def rarity(season_titles, league_titles):
     return "plain", "普卡"
 
 
+def season_wins(result, cfg):
+    """各果蠅的季冠軍次數。只算已經跑完的季，進行中的那一季不列入。"""
+    done = len(result["days"]) // result["rules"]["season_days"]
+    return {name: sum(1 for season, place in places.items() if place == 1 and season <= done)
+            for name, places in analysis.season_ranks(result, cfg).items()}
+
+
+def titles_earned(result, cfg, snap):
+    """這一屆各果蠅拿到的頭銜：{果蠅: {"season": 季冠軍次數, "league": 屆冠軍次數}}。"""
+    out = {}
+    for name, wins in season_wins(result, cfg).items():
+        if wins:
+            out.setdefault(name, {})["season"] = wins
+    winner = champion(snap, result["rules"])
+    if winner:
+        out.setdefault(winner, {})["league"] = 1
+    return out
+
+
 def payload(result, snap, out_dir, save_profiles=False, honours=None):
     cfg, market = result["cfg"], result["market"]
     capital = cfg["broker"]["capital"]
     names = {**SYMBOL_NAMES, **cfg.get("symbol_names", {})}
-    ranks = analysis.season_ranks(result, cfg)
+    wins = season_wins(result, cfg)
     champ = champion(snap, result["rules"])
     dates = [str(d.date()) for d in result["days"]]
     bench = market.bench.reindex(result["days"]).ffill()
@@ -71,8 +90,9 @@ def payload(result, snap, out_dir, save_profiles=False, honours=None):
     traders = []
     for t in result["traders"]:
         r, p = rows[t.name], profs[t.name]
-        seasons_won = sum(1 for place in ranks.get(t.name, {}).values() if place == 1)
-        leagues_won = (honours or {}).get(t.name, 0) + (1 if champ == t.name else 0)
+        prior = (honours or {}).get(t.name, {})  # 前幾屆累積的頭銜，跟著果蠅走
+        seasons_won = prior.get("season", 0) + wins.get(t.name, 0)
+        leagues_won = prior.get("league", 0) + (1 if champ == t.name else 0)
         tier, tier_name = rarity(seasons_won, leagues_won) if not p["control"] else ("plain", "對照組")
         curve = dict(t.curve)
         journal = [e for e in t.journal if e["date"] in recent_days and e["action"] != HOLD and e.get("selected", True)][-40:]
@@ -131,7 +151,7 @@ def payload(result, snap, out_dir, save_profiles=False, honours=None):
 
 def build(result, snap, out_dir=None, save_profiles=False, honours=None):
     """公開網站（docs/）由雲端用 save_profiles=True 產生；本機預覽輸出到 preview/ 且不改寫角色檔。
-    honours：{果蠅: 之前幾屆的冠軍次數}，讓老將把冠軍頭銜帶到新一屆。"""
+    honours：{果蠅: {"season": n, "league": m}}，讓老將把季冠軍與屆冠軍頭銜帶到新一屆。"""
     out_dir = Path(out_dir) if out_dir else ROOT / "preview"
     out_dir.mkdir(parents=True, exist_ok=True)
     data = payload(result, snap, out_dir, save_profiles, honours)

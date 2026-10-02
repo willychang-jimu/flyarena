@@ -206,9 +206,10 @@ def cmd_publish(a, cfg):
             continue
         snap = league.snapshot(result)
         dashboard.build(result, snap, base / name, save_profiles=not a.preview, honours=honours)
-        winner = dashboard.champion(snap, rules)
-        if winner:
-            honours[winner] = honours.get(winner, 0) + 1
+        for fly, earned in dashboard.titles_earned(result, result["cfg"], snap).items():
+            acc = honours.setdefault(fly, {})
+            for kind, n in earned.items():
+                acc[kind] = acc.get(kind, 0) + n
         report_dir = base / "reports" if a.preview else None
         season_report.build(name, result=result, out=report_dir)
         prof = profiles.build(league.LEAGUES / name, snap["rows"], save=False)
